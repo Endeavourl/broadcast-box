@@ -159,7 +159,7 @@ const Player = (props: PlayerProps) => {
 					.setLocalDescription(offer)
 					.catch((err) => console.error("SetLocalDescription", err));
 
-				fetch(`${apiPath}/whep`, {
+				fetch(`${window.document.location.origin}${apiPath}/whep`, {
 					method: 'POST',
 					body: offer.sdp,
 					headers: {

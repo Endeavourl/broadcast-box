@@ -153,7 +153,7 @@ function BrowserBroadcaster() {
 					peerConnectionRef.current!.setLocalDescription(offer)
 						.catch((err) => console.error("SetLocalDescription", err));
 
-					fetch(`${apiPath}/whip`, {
+					fetch(`${window.document.location.origin}${apiPath}/whip`, {
 						method: 'POST',
 						body: offer.sdp,
 						headers: {
