@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/glimesh/broadcast-box/discord"
 	"github.com/glimesh/broadcast-box/internal/networktest"
 	"github.com/glimesh/broadcast-box/internal/webhook"
 	"github.com/glimesh/broadcast-box/internal/webrtc"
@@ -102,9 +103,12 @@ func whipHandler(res http.ResponseWriter, r *http.Request) {
 	res.Header().Add("Location", "/api/whip")
 	res.Header().Add("Content-Type", "application/sdp")
 	res.WriteHeader(http.StatusCreated)
+
 	if _, err = fmt.Fprint(res, answer); err != nil {
 		log.Println(err)
 	}
+
+	discord.NotifyStream(streamKey)
 }
 
 func whepHandler(res http.ResponseWriter, req *http.Request) {
@@ -297,6 +301,8 @@ func main() {
 	mux.HandleFunc("/api/sse/", corsHandler(whepServerSentEventsHandler))
 	mux.HandleFunc("/api/layer/", corsHandler(whepLayerHandler))
 	mux.HandleFunc("/api/status", corsHandler(statusHandler))
+
+	discord.Create()
 
 	server := &http.Server{
 		Handler: mux,
