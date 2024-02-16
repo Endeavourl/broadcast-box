@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/glimesh/broadcast-box/discord"
 	"github.com/glimesh/broadcast-box/internal/networktest"
 	"github.com/glimesh/broadcast-box/internal/webrtc"
 	"github.com/joho/godotenv"
@@ -70,6 +71,8 @@ func whipHandler(res http.ResponseWriter, r *http.Request) {
 	res.Header().Add("Content-Type", "application/sdp")
 	res.WriteHeader(http.StatusCreated)
 	fmt.Fprint(res, answer)
+
+	discord.NotifyStream(streamKey)
 }
 
 func whepHandler(res http.ResponseWriter, req *http.Request) {
@@ -251,6 +254,8 @@ func main() {
 		mux.HandleFunc("/api/status", corsHandler(statusHandler))
 	}
 
+	discord.Create()
+
 	server := &http.Server{
 		Handler: mux,
 		Addr:    os.Getenv("HTTP_ADDRESS"),
@@ -277,5 +282,4 @@ func main() {
 		log.Println("Running HTTP Server at `" + os.Getenv("HTTP_ADDRESS") + "`")
 		log.Fatal(server.ListenAndServe())
 	}
-
 }

@@ -3,6 +3,7 @@ module github.com/glimesh/broadcast-box
 go 1.19
 
 require (
+	github.com/bwmarrin/discordgo v0.27.1
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/pion/dtls/v2 v2.2.10
@@ -16,6 +17,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/pion/datachannel v1.5.6 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns/v2 v2.0.7 // indirect
