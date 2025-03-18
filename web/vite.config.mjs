@@ -8,7 +8,12 @@ export default defineConfig({
 		postcss: './postcss.config.js',
 	},
 	build: {
-		outDir: 'build',
+		outDir: 'build', 
+		minify: false,
+		terserOptions: {
+			compress: false,
+			mangle: false,
+		},
 	},
 	server: {
 		open: true, // Opens browser on dev server start

@@ -16,7 +16,7 @@ import (
 )
 
 func audioWriter(remoteTrack *webrtc.TrackRemote, stream *stream) {
-	rtpBuf := make([]byte, 1500)
+	rtpBuf := make([]byte, 15000)
 	for {
 		rtpRead, _, err := remoteTrack.Read(rtpBuf)
 		switch {
@@ -58,13 +58,14 @@ func videoWriter(remoteTrack *webrtc.TrackRemote, stream *stream, peerConnection
 						MediaSSRC: uint32(remoteTrack.SSRC()),
 					},
 				}); sendErr != nil {
+					log.Println("PLI WriteRTCP failed.", sendErr)
 					return
 				}
 			}
 		}
 	}()
 
-	rtpBuf := make([]byte, 1500)
+	rtpBuf := make([]byte, 15000)
 	rtpPkt := &rtp.Packet{}
 	codec := getVideoTrackCodec(remoteTrack.Codec().MimeType)
 

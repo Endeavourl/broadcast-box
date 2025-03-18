@@ -85,6 +85,7 @@ const Player = (props: PlayerProps) => {
 		return () => {
 			peerConnectionRef.current?.close()
 			peerConnectionRef.current = null
+      		console.log("Effect cleanup: RTCP closed");
 			
 			videoRef.current?.removeEventListener("playing", setHasSignalHandler)
 
@@ -174,10 +175,13 @@ const Player = (props: PlayerProps) => {
 					layerEndpointRef.current = `${window.location.protocol}//${parsedLinkHeader['urn:ietf:params:whep:ext:core:layer'].url}`
 
 					const evtSource = new EventSource(`${window.location.protocol}//${parsedLinkHeader['urn:ietf:params:whep:ext:core:server-sent-events'].url}`)
-					evtSource.onerror = _ => evtSource.close();
-
+					evtSource.onerror = err => {
+						console.log("evtSource error: ", err);
+						evtSource.close();
+					}		
 					evtSource.addEventListener("layers", event => {
 						const parsed = JSON.parse(event.data)
+						console.log("parsed layer event: ", parsed);
 						setVideoLayers(() => parsed['1']['layers'].map((layer: any) => layer.encodingId))
 					})
 

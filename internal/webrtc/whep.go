@@ -115,6 +115,7 @@ func WHEP(offer, streamKey string) (string, string, error) {
 		for {
 			rtcpPackets, _, rtcpErr := rtpSender.ReadRTCP()
 			if rtcpErr != nil {
+				log.Println("PLI loop: ReadRPCT failed.", rtcpErr)
 				return
 			}
 
