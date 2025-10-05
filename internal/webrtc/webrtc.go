@@ -16,6 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/glimesh/broadcast-box/internal/util"
 	"github.com/pion/dtls/v3/pkg/crypto/elliptic"
 	"github.com/pion/ice/v3"
 	"github.com/pion/interceptor"
@@ -462,6 +463,10 @@ func GetStreamStatuses() []StreamStatus {
 	out := []StreamStatus{}
 
 	for streamKey, stream := range streamMap {
+		if util.IsHiddenStream(streamKey) {
+			continue
+		}
+
 		whepSessions := []whepSessionStatus{}
 		stream.whepSessionsLock.Lock()
 		for id, whepSession := range stream.whepSessions {

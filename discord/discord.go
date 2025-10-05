@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/glimesh/broadcast-box/internal/util"
 )
 
 var channelId string
@@ -53,8 +54,7 @@ func SendMessage(msg string) {
 }
 
 func NotifyStream(stream string) {
-	if stream[len(stream)-1] == '_' {
-		// treat underscore-ending streams as hidden
+	if util.IsHiddenStream(stream) {
 		return
 	}
 
