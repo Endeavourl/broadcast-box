@@ -107,8 +107,6 @@ func whipHandler(res http.ResponseWriter, r *http.Request) {
 	if _, err = fmt.Fprint(res, answer); err != nil {
 		log.Println(err)
 	}
-
-	discord.NotifyStream(streamKey)
 }
 
 func whepHandler(res http.ResponseWriter, req *http.Request) {
@@ -303,6 +301,7 @@ func main() {
 	mux.HandleFunc("/api/status", corsHandler(statusHandler))
 
 	discord.Create()
+	defer discord.Close()
 
 	server := &http.Server{
 		Handler: mux,

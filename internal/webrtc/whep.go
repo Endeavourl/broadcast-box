@@ -157,6 +157,10 @@ func WHEP(offer, streamKey string) (string, string, error) {
 	stream.whepSessions[whepSessionId].currentLayer.Store("")
 	stream.whepSessions[whepSessionId].waitingForKeyframe.Store(false)
 
+	for _, listener := range streamClientListeners {
+		listener(streamKey, len(stream.whepSessions))
+	}
+
 	return maybePrintOfferAnswer(appendAnswer(peerConnection.LocalDescription().SDP), false), whepSessionId, nil
 }
 

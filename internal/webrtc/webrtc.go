@@ -73,6 +73,9 @@ var (
 
 	// nolint
 	videoRTCPFeedback = []webrtc.RTCPFeedback{{"goog-remb", ""}, {"ccm", "fir"}, {"nack", ""}, {"nack", "pli"}}
+
+	streamListeners       []func(streamName string, started bool)
+	streamClientListeners []func(streamName string, clients int)
 )
 
 func getVideoTrackCodec(in string) videoTrackCodec {
@@ -136,6 +139,10 @@ func peerConnectionDisconnected(forWHIP bool, streamKey string, sessionId string
 
 	if !forWHIP {
 		delete(stream.whepSessions, sessionId)
+
+		for _, listener := range streamClientListeners {
+			listener(streamKey, len(stream.whepSessions))
+		}
 	} else {
 		stream.videoTracks = slices.DeleteFunc(stream.videoTracks, func(v *videoTrack) bool {
 			return v.sessionId == sessionId
@@ -148,6 +155,10 @@ func peerConnectionDisconnected(forWHIP bool, streamKey string, sessionId string
 			return
 		}
 		stream.hasWHIPClient.Store(false)
+
+		for _, listener := range streamListeners {
+			listener(streamKey, false)
+		}
 	}
 
 	// Only delete stream if all WHEP Sessions are gone and have no WHIP Client
@@ -509,4 +520,12 @@ func GetStreamStatuses() []StreamStatus {
 	}
 
 	return out
+}
+
+func AddStreamListener(listener func(streamName string, started bool)) {
+	streamListeners = append(streamListeners, listener)
+}
+
+func AddStreamClientListener(listener func(streamName string, clients int)) {
+	streamClientListeners = append(streamClientListeners, listener)
 }

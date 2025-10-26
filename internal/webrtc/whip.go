@@ -192,5 +192,10 @@ func WHIP(offer, streamKey string) (string, error) {
 	}
 
 	<-gatherComplete
+
+	for _, listener := range streamListeners {
+		listener(streamKey, true)
+	}
+
 	return maybePrintOfferAnswer(appendAnswer(peerConnection.LocalDescription().SDP), false), nil
 }
